@@ -18,7 +18,9 @@ public class Main {
                 System.out.println(nameList.removeFirst());
             }
         }
-        new myThread().start();
+        myThread mythread = new myThread();
+        mythread.setName("one");
+        mythread.start();
         new myThread().start();
     }
 
@@ -26,12 +28,15 @@ public class Main {
 
         private List list = Collections.synchronizedList(new ArrayList<>());
 
-        public void add(String name){
+        public synchronized void add(String name){
             list.add(name);
         }
 
-        public String removeFirst(){
+        public synchronized String removeFirst(){
             if(list.size() > 0){
+                if(Thread.currentThread().getName().equals("one")){
+                    Thread.yield();
+                }
                 return list.removeFirst().toString();
             }
             return null;

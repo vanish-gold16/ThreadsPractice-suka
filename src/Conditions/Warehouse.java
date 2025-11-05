@@ -1,14 +1,14 @@
-package Condition;
+package Conditions;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Warehouse {
-    private final ReentrantLock lock = new ReentrantLock();
-    private final Condition hasProduct = lock.newCondition();
-    private boolean availible = false;
+    private static final ReentrantLock lock = new ReentrantLock();
+    private static final Condition hasProduct = lock.newCondition();
+    private static boolean availible = false;
 
-    public void produce() throws InterruptedException {
+    public static void produce() throws InterruptedException {
         lock.lock();
         try{
             while (availible){
