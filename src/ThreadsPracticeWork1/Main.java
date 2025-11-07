@@ -26,7 +26,7 @@ public class Main {
         }
 
         service.shutdown();
-            service.awaitTermination(10, TimeUnit.SECONDS);
+        service.awaitTermination(10, TimeUnit.SECONDS);
 
         System.out.println(bankAccount1.getBallance() + bankAccount2.getBallance() + bankAccount3.getBallance());
 
