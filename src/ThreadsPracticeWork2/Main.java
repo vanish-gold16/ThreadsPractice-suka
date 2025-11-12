@@ -11,14 +11,16 @@ public class Main {
         Client client1 = new Client(1);
         Client client2 = new Client(2);
         Client client3 = new Client(3);
+        Client client4 = new Client(4);
+        Client client5 = new Client(5);
 
         ClientsManagement.clients.add(client1);
         ClientsManagement.clients.add(client2);
         ClientsManagement.clients.add(client3);
+        ClientsManagement.clients.add(client4);
+        ClientsManagement.clients.add(client5);
 
-        for (int i = 0; i < 3; i++) {
-            service.execute(new Threads());
-        }
+        service.execute(new Threads());
 
         service.shutdown();
     }
