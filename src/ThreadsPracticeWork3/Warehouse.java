@@ -11,7 +11,7 @@ public class Warehouse {
     Item erdBackpack = new Item("Erd Backpack", 10);
     Item saintLaurenJeans = new Item("Saint Lauren Jeans", 50);
 
-    private final List<Item> items = new ArrayList<>();
+    private static final List<Item> items = new ArrayList<>();
 
     public void addItem(Item item) {
         items.add(item);
