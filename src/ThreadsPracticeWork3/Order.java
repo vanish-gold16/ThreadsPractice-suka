@@ -1,11 +1,7 @@
 package ThreadsPracticeWork3;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -14,39 +10,63 @@ public class Order {
 
     Warehouse warehouse = new Warehouse();
 
-    public boolean availible = false;
-
-    ReentrantLock lock = new ReentrantLock();
-    Condition condition = lock.newCondition();
+    private final ReentrantLock lock = new ReentrantLock();
+    private final Condition producer = lock.newCondition();
+    private final Condition consumer = lock.newCondition();
 
     private final List<Item> order = new ArrayList<>();
 
-    public void addItemToOrder(Item item) {
-        boolean isLocked = false;
+    public void checkingItemAvalibility(Item item) throws InterruptedException {
+        boolean locked = false;
+        try {
+            lock.lock();
 
-        try{
-            AtomicInteger index = warehouse.returnItemByName(item.getName());
-            if(warehouse.getItems().get(index.intValue()).getQuantity().intValue()
-                    >= item.getQuantity().intValue()) {
-                availible = true;
-                if (lock.tryLock(2, TimeUnit.SECONDS)) {
-                    isLocked = true;
+            int index = warehouse.returnItemByName(item.getName());
+            while (warehouse.getItems().get(index).getQuantity().intValue() >= item.getQuantity().intValue()) {
+                    producer.await();
+            }
+            warehouse.createItem(item);
+            consumer.signalAll();
+        }finally {
+            lock.unlock();
+        }
+    }
+
+    public void addItemToOrder(Item item) {
+
+        try {
+                lock.lock();
+
+                int index = warehouse.returnItemByName(item.getName());
+
+                if (warehouse.getItems().get(index).getQuantity().intValue()
+                        >= item.getQuantity().intValue()){
+
+                    warehouse.newBuying(item);
+                    order.add(item);
+
+                }
+                else {
+
+                    while (warehouse.getItems().get(index).getQuantity().intValue() < item.getQuantity().intValue()) {
+                        consumer.await();
+                    }
+                    warehouse.newBuying(item);
+                    producer.signalAll();
                     order.add(item);
                 }
-            }
-            else{
-                availible = false;
-                while(!availible){
-                    condition.await();
-                }
-
-            }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            }catch (InterruptedException e) {
+                throw new RuntimeException(e);
         } finally{
-            if(isLocked)
                 lock.unlock();
         }
     }
 
+    public Order(Warehouse warehouse) {
+        this.warehouse = warehouse;
+    }
+
+    public Condition getProducer() {
+        return producer;
+    }
 }

@@ -2,14 +2,12 @@ package ThreadsPracticeWork3;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Warehouse {
 
-    Item threeXL = new Item("3XL", 100);
-    Item rickOwensThirtyfive = new Item("RIck Owen's 35x", 20);
-    Item erdBackpack = new Item("Erd Backpack", 10);
-    Item saintLaurenJeans = new Item("Saint Lauren Jeans", 50);
+    Random random = new Random();
 
     private static final List<Item> items = new ArrayList<>();
 
@@ -22,18 +20,31 @@ public class Warehouse {
     }
 
     public void newBuying(Item item){
-        AtomicInteger index = returnItemByName(item.getName());
-        if(index.get() >= 0)
-        items.get(index.get()).getQuantity().decrementAndGet();
+        int index = returnItemByName(item.getName());
+        if(index >= 0)
+        items.get(index).getQuantity().decrementAndGet();
     }
 
-    public AtomicInteger returnItemByName(String name){
+    public void createItem(Item item) throws InterruptedException {
+        System.out.println("Creating new items");
+
+        Thread.sleep(2000);
+
+        int quantity = random.nextInt(1, 6);
+        AtomicInteger atomicQuantity = new AtomicInteger();
+
+        atomicQuantity.set(item.getQuantity().intValue() + quantity);
+        items.get(returnItemByName(item.getName())).setQuantity(atomicQuantity);
+
+    }
+
+    public int returnItemByName(String name){
         AtomicInteger index = new AtomicInteger(-1);
         for (int i = 0; i < items.size(); i++) {
             if(items.get(i).getName().equals(name))
                 index.set(i);
         }
-        return index;
+        return index.intValue();
     }
 
 }
