@@ -44,7 +44,7 @@ public class Order {
 
                     warehouse.newBuying(item);
                     order.add(item);
-
+                    producer.signalAll();
                 }
                 else {
 

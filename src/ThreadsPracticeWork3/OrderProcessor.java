@@ -20,12 +20,29 @@ public class OrderProcessor {
     }
 
     public void processingOrder(Order order){
-        executor.execute(() -> {
-            int itemAmount = random.nextInt(1, 5);
-            for (int i = 0; i < itemAmount; i++) {
-               warehouse.getItems().get(random.nextInt(0, warehouse.getItems().size()));
-            }
-        });
+
+        int itemAmount = random.nextInt(1, 5);
+        for (int i = 0; i < itemAmount; i++) {
+            finalItemsList.add(warehouse.getItems().get(random.nextInt(0, warehouse.getItems().size())));
+        }
+        for (int i = 0; i < finalItemsList.size(); i++) {
+
+            int finalI = i;
+
+            executor.execute(() -> {
+                order.addItemToOrder(finalItemsList.get(finalI));
+            });
+
+            executor.execute(() -> {
+                try {
+                    order.checkingItemAvalibility(finalItemsList.get(finalI));
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+        }
+
     }
 
 }
