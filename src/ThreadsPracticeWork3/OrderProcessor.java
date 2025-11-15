@@ -13,7 +13,8 @@ public class OrderProcessor {
 
     private final List<Item> finalItemsList = new ArrayList<Item>();
 
-    private final ExecutorService executor = Executors.newFixedThreadPool(4);
+    private final ExecutorService buyer = Executors.newFixedThreadPool(20);
+    private final ExecutorService producer = Executors.newFixedThreadPool(5);
 
     public OrderProcessor(Warehouse warehouse) {
         this.warehouse = warehouse;
@@ -25,22 +26,23 @@ public class OrderProcessor {
         for (int i = 0; i < itemAmount; i++) {
             finalItemsList.add(warehouse.getItems().get(random.nextInt(0, warehouse.getItems().size())));
         }
-        for (int i = 0; i < finalItemsList.size(); i++) {
-
-            int finalI = i;
-
-            executor.execute(() -> {
-                order.addItemToOrder(finalItemsList.get(finalI));
-            });
-
-            executor.execute(() -> {
-                try {
-                    order.checkingItemAvalibility(finalItemsList.get(finalI));
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+        for (int i = 0; i < 100; i++) {
+            buyer.execute(() -> {
+                for (int j = 0; j < finalItemsList.size(); j++) {
+                    order.addItemToOrder(finalItemsList.get(j));
                 }
             });
-
+        }
+        for (int i = 0; i < 10; i++) {
+            producer.execute(() -> {
+                for (int j = 0; j < finalItemsList.size(); j++){
+                    try {
+                        order.checkingItemAvalibility(finalItemsList.get(j));
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
         }
 
     }
