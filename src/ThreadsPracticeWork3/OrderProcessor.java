@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class OrderProcessor {
 
@@ -13,37 +14,63 @@ public class OrderProcessor {
 
     private final List<Item> finalItemsList = new ArrayList<Item>();
 
-    private final ExecutorService buyer = Executors.newFixedThreadPool(20);
-    private final ExecutorService producer = Executors.newFixedThreadPool(5);
+    private final ExecutorService buyer = Executors.newFixedThreadPool(5);
+    private final ExecutorService producer = Executors.newFixedThreadPool(2);
 
     public OrderProcessor(Warehouse warehouse) {
         this.warehouse = warehouse;
     }
 
-    public void processingOrder(Order order){
+    public void processingOrder(){
 
         int itemAmount = random.nextInt(1, 5);
         for (int i = 0; i < itemAmount; i++) {
             finalItemsList.add(warehouse.getItems().get(random.nextInt(0, warehouse.getItems().size())));
         }
-        for (int i = 0; i < 100; i++) {
+
+        /**
+         * generating 20 customers
+         */
+        for (int i = 0; i < 20; i++) {
+
+            Order order = new Order(this.warehouse);
+
             buyer.execute(() -> {
                 for (int j = 0; j < finalItemsList.size(); j++) {
-                    order.addItemToOrder(finalItemsList.get(j));
+
+                    order.buyItem(finalItemsList.get(j));
                 }
             });
         }
-        for (int i = 0; i < 10; i++) {
+
+        /**
+         * generating 5 workers
+         */
+        for (int i = 0; i < 5; i++) {
             producer.execute(() -> {
                 for (int j = 0; j < finalItemsList.size(); j++){
                     try {
-                        order.checkingItemAvalibility(finalItemsList.get(j));
+                        warehouse.checkingItemAvalibility(finalItemsList.get(j));
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
                 }
             });
         }
+
+        buyer.shutdown();
+        producer.shutdown();
+
+        try{
+            System.out.println("Waiting for buyers to finish...");
+            buyer.awaitTermination(1, TimeUnit.MINUTES);
+            System.out.println("Waiting for producers to finish...");
+            producer.awaitTermination(1, TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        System.out.println("All processing finished");
 
     }
 

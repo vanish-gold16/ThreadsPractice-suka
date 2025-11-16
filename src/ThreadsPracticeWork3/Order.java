@@ -8,65 +8,15 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Order {
 
-    Warehouse warehouse = new Warehouse();
+    private Warehouse warehouse = new Warehouse();
 
-    private final ReentrantLock lock = new ReentrantLock();
-    private final Condition producer = lock.newCondition();
-    private final Condition consumer = lock.newCondition();
+    private List<Item> myCart = new ArrayList<>();
 
-    private final List<Item> order = new ArrayList<>();
-
-    public void checkingItemAvalibility(Item item) throws InterruptedException {
-        boolean locked = false;
-        try {
-            lock.lock();
-
-            int index = warehouse.returnItemByName(item.getName());
-            while (warehouse.getItems().get(index).getQuantity().intValue() >= item.getQuantity().intValue()) {
-                    producer.await();
-            }
-            warehouse.createItem(item);
-            consumer.signalAll();
-        }finally {
-            lock.unlock();
-        }
-    }
-
-    public void addItemToOrder(Item item) {
-
-        try {
-                lock.lock();
-
-                int index = warehouse.returnItemByName(item.getName());
-
-                if (warehouse.getItems().get(index).getQuantity().intValue()
-                        >= item.getQuantity().intValue()){
-
-                    warehouse.newBuying(item);
-                    order.add(item);
-                    producer.signalAll();
-                }
-                else {
-
-                    while (warehouse.getItems().get(index).getQuantity().intValue() < item.getQuantity().intValue()) {
-                        consumer.await();
-                    }
-                    warehouse.newBuying(item);
-                    producer.signalAll();
-                    order.add(item);
-                }
-            }catch (InterruptedException e) {
-                throw new RuntimeException(e);
-        } finally{
-                lock.unlock();
-        }
+    public void buyItem(Item item) {
+        warehouse.addItemToOrder(item, myCart);
     }
 
     public Order(Warehouse warehouse) {
         this.warehouse = warehouse;
-    }
-
-    public Condition getProducer() {
-        return producer;
     }
 }
