@@ -23,7 +23,7 @@ public class MiniWarehouse {
         }
     }
 
-    public void addShelves(Shelf shelf){
+    public void addShelf(Shelf shelf){
         shelves.add(shelf);
     }
 

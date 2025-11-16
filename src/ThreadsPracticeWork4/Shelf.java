@@ -10,11 +10,7 @@ public class Shelf {
     }
 
     public boolean canFit(int size){
-        if(currentLoad + size >= capacity){
-            return true;
-        }
-        else
-            return false;
+        return currentLoad + size <= capacity;
     }
 
     @Override
