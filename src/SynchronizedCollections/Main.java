@@ -16,6 +16,7 @@ public class Main {
             @Override
             public void run() {
                 System.out.println(nameList.removeFirst());
+                return null;
             }
         }
         myThread mythread = new myThread();

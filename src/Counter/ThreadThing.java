@@ -23,5 +23,6 @@ public class ThreadThing extends Thread {
         }
         System.out.println("Thread " + threadNum + " is finished");
 
+        return null;
     }
 }

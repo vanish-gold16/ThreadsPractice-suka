@@ -22,6 +22,7 @@ public class Main {
         @Override
         public void run() {
             i.getAndIncrement();
+            return null;
         }
     }
 }
