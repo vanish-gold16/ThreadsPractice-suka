@@ -45,7 +45,6 @@ public class Main {
                     System.out.println(strings.removeLast());
                 }
             }
-            return null;
         }
     }
 }

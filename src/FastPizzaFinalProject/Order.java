@@ -21,6 +21,20 @@ public class Order {
         return "Order number " + Id + ", " + name + ", cooking time " + cookingTime + "ms";
     }
 
+    public static String generateRandomOrder(Random random){
+        int orderNumber = random.nextInt(1, 4);
+        switch(orderNumber){
+            case 1:
+                return "Pepperoni";
+            case 2:
+                return "4 Cheese";
+            case 3:
+                return "Margarita";
+            default:
+                return null;
+        }
+    }
+
     public String getName() {
         return name;
     }

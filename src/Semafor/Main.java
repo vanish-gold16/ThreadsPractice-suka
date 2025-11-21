@@ -46,7 +46,6 @@ public class Main {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            return null;
         }
     }
 }

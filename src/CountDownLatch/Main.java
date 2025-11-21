@@ -32,6 +32,5 @@ class Work extends Thread{
         }
         System.out.println("done work");
         countDownLatch.countDown();
-        return null;
     }
 }

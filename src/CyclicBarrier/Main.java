@@ -20,7 +20,6 @@ public class Main {
         @Override
         public void run() {
             System.out.println("Run has begun");
-            return null;
         }
     }
 
@@ -41,7 +40,6 @@ public class Main {
             } catch (BrokenBarrierException e) {
                 throw new RuntimeException(e);
             }
-            return null;
         }
     }
 }

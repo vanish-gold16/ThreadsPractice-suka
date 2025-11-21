@@ -20,6 +20,5 @@ public class MyThread extends  Thread {
                 throw new RuntimeException(e);
             }
         }
-        return null;
     }
 }

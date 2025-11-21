@@ -61,6 +61,5 @@ public class Example implements Runnable {
     @Override
     public void run() {
 
-        return null;
     }
 }

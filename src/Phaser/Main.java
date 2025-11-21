@@ -25,7 +25,6 @@ public class Main {
 
                 phaser.arriveAndAwaitAdvance(); // waiting until the first i is done
             }
-            return null;
         }
     }
 }

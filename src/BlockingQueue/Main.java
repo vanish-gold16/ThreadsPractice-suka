@@ -18,14 +18,12 @@ public class Main {
                 } catch (InterruptedException e) {                    // , waiting until the second thread will add an element
                     throw new RuntimeException(e);
                 }
-                return null;
             }
         }.start();
         new Thread(){
             @Override
             public void run(){
                 priorityBlockingQueue.add("This is string");
-                return null;
             }
         }.start();
 

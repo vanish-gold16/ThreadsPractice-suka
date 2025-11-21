@@ -15,7 +15,6 @@ public class Main {
         @Override
         public void run() {
             System.out.println(1);
-            return null;
         }
     }
 }

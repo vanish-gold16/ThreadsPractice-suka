@@ -30,7 +30,6 @@ public class Main {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            return null;
         }
     }
 
@@ -51,7 +50,6 @@ public class Main {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            return null;
         }
     }
 }

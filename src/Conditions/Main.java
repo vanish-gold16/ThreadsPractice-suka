@@ -28,7 +28,6 @@ public class Main {
             System.out.println(account);
             condition.signal();
             lock.unlock();
-            return null;
         }
     }
 
@@ -47,7 +46,6 @@ public class Main {
             }
             account -= 10;
             System.out.println(account);
-            return null;
         }
     }
 }
