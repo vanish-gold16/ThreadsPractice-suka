@@ -59,7 +59,7 @@
                     chefsCondition.await();
                 }
                 System.out.println("Cooking order...");
-                order = orders.remove(0);
+                order = orders.removeFirst();
                 waitersCondition.signalAll();
             } finally {
                 lock.unlock();
@@ -80,7 +80,7 @@
                     waitersCondition.await();
                 }
                 System.out.println("Taking order...");
-                newOrder(order.);
+                newOrder(orders.getFirst());
                 chefsCondition.signalAll();
             } finally {
                 lock.unlock();
